@@ -1,0 +1,16 @@
+[submodule "go-infra"]
+	path = go-infra
+	url = https://github.com/babbage88/go-infra.git
+	branch = develop
+[submodule "db-helper-ui"]
+	path = db-helper-ui
+	url = https://github.com/babbage88/db-helper-ui.git
+	branch = develop
+[submodule "infra-cli"]
+	path = infra-cli
+	url = https://github.com/babbage88/infra-cli.git
+	branch = develop
+[submodule "infra-db"]
+	path = infra-db
+	url = https://github.com/babbage88/infra-db.git
+	branch = master
