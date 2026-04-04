@@ -11,9 +11,58 @@ devdb_ssh_host := "10.2.10.248"
 devdb_ssh_user := "root"
 devdb_ssh_key := "~/.ssh/id_ed25519"
 goosey_path := "infra-db/goosey"
+SPEC_JSON_SRC_FILE := "spec/swagger.local-https.json"
+SPEC_YAML_SRC_FILE := "spec/swagger.local-https.yaml"
+SPEC_JSON_SRC_FILE_HTTP := "spec/swagger.local.json"
+SPEC_YAML_SRC_FILE_HTTP := "spec/swagger.local.yaml"
+DEV_SPEC_JSON_SRC_FILE := "spec/swagger.dev.json"
+DEV_SPEC_YAML_SRC_FILE := "spec/swagger.dev.yaml"
+
+
+check-swagger:
+    @printf "#### [INFO - Local Dev] #### [%s] Ensuring go-swagger cli is installed...\n" "$$(date '+%Y-%m-%d %H:%M:%S')"
+    @which swagger || (GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger)
+
+swagger:
+    @cd go-infra && swagger generate spec -o ./swagger.yaml --scan-models && swagger generate spec -o swagger.json --scan-models
+
+dev-swagger: check-swagger
+    @cd go-infra && swagger generate spec -o ./dev-swagger.yaml --scan-models && swagger generate spec -o dev-swagger.json --scan-models
+    @cd go-infra && swagger mixin {{DEV_SPEC_JSON_SRC_FILE}} dev-swagger.json --output swagger.json --format=json
+    @cd go-infra && swagger mixin {{DEV_SPEC_YAML_SRC_FILE}} dev-swagger.yaml --output swagger.yaml --format=yaml
+    @cd go-infra && rm dev-swagger.json && rm dev-swagger.yaml
+
+local-swagger: check-swagger
+    #!/usr/bin/env bash
+    cd go-infra
+    printf "#### [INFO - Local Dev] #### [%s] Generating swagger YAML spec...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger generate spec -o ./local-swagger.yaml --scan-models
+    printf "#### [INFO - Local Dev] #### [%s] Generating swagger JSON spec...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger generate spec -o local-swagger.json --scan-models
+    printf "#### [INFO - Local Dev] #### [%s] Merging JSON spec into swagger.json...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger mixin {{SPEC_JSON_SRC_FILE_HTTP}} local-swagger.json --output swagger.json --format=json
+    printf "#### [INFO - Local Dev] #### [%s] Merging YAML spec into swagger.yaml...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger mixin {{SPEC_YAML_SRC_FILE_HTTP}} local-swagger.yaml --output swagger.yaml --format=yaml
+    printf "#### [INFO - Local Dev] #### [%s] Cleaning up temporary swagger files...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    rm local-swagger.json local-swagger.yaml
+    cd ...
 
 
 
+local-swagger-https: check-swagger
+    #!/usr/bin/env bash
+    cd go-infra
+    printf "#### [INFO - Local Dev] #### [%s] Generating swagger YAML spec...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger generate spec -o ./local-swagger.yaml --scan-models
+    printf "#### [INFO - Local Dev] #### [%s] Generating swagger JSON spec...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger generate spec -o local-swagger.json --scan-models
+    printf "#### [INFO - Local Dev] #### [%s] Merging JSON spec into swagger.json...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger mixin {{SPEC_JSON_SRC_FILE}} local-swagger.json --output swagger.json --format=json
+    printf "#### [INFO - Local Dev] #### [%s] Merging YAML spec into swagger.yaml...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    swagger mixin {{SPEC_YAML_SRC_FILE}} local-swagger.yaml --output swagger.yaml --format=yaml
+    printf "#### [INFO - Local Dev] #### [%s] Cleaning up temporary swagger files...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    rm local-swagger.json local-swagger.yaml
+    cd ..
 
 init_dev_db:
     @echo "Creating development database..."
