@@ -42,6 +42,9 @@ jobs:
           go-version-file: infra-cli/go.mod
           cache-dependency-path: infra-cli/go.sum
 
+      - name: Build embedded remote utils
+        run: make utils REMOTE_UTILS_PLATFORMS="linux/amd64 linux/arm64"
+
       - name: Run targeted tests
         run: go test ./cmd ./deployer ./ssh ./remote_utils
 
