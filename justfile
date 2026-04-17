@@ -111,3 +111,12 @@ run_ui_dev: kill_ui
 
 run_all_dev: run_infra_dev_api run_ui_dev
     echo "All development servers are running."
+
+infractl-utils:
+    cd ./infra-cli && make utils
+
+infractl-build:
+    cd ./infra-cli && make build
+
+infractl-release-artifact goos="linux" goarch="amd64":
+    cd ./infra-cli && make release-artifact BUILD_GOOS={{goos}} BUILD_GOARCH={{goarch}}
