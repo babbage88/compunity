@@ -33,11 +33,14 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: infra-cli/go.mod
+          cache-dependency-path: infra-cli/go.sum
 
       - name: Run targeted tests
         run: go test ./cmd ./deployer ./ssh ./remote_utils
