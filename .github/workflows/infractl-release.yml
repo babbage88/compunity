@@ -1,0 +1,76 @@
+name: Infractl Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+
+    defaults:
+      run:
+        working-directory: infra-cli
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: infra-cli/go.mod
+
+      - name: Run targeted tests
+        run: go test ./cmd ./deployer ./ssh ./remote_utils
+
+      - name: Build release artifact
+        run: make release-artifact BUILD_GOOS=${{ matrix.goos }} BUILD_GOARCH=${{ matrix.goarch }} REMOTE_UTILS_PLATFORMS="linux/amd64 linux/arm64"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: infractl-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: |
+            infra-cli/dist/*.tar.gz
+            infra-cli/dist/*.tar.gz.sha256
+          if-no-files-found: error
+
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release-assets/*.tar.gz
+            release-assets/*.tar.gz.sha256
+          generate_release_notes: true
