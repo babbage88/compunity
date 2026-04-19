@@ -21,3 +21,6 @@
 [submodule "infra-core"]
 	path = infra-core
 	url = https://github.com/babbage88/infra-core
+[submodule "api-test-ui"]
+	path = api-test-ui
+	url = https://github.com/babbage88/api-test-ui
