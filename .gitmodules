@@ -18,3 +18,6 @@
 	path = goph
 	url = https://github.com/babbage88/goph.git
 	branch = master
+[submodule "infra-core"]
+	path = infra-core
+	url = https://github.com/babbage88/infra-core
