@@ -72,5 +72,6 @@ Later, `go-infra` can persist job state in Postgres and stream logs through the 
 
 - Require authentication before exposing the API beyond localhost.
 - Treat SSH passphrases, DB passwords, generated S3 secrets, and tokens as sensitive fields.
+- Prefer `use_agent`, SSH config aliases, future secret references, or `private_key_base64`/`private_key_pem` over server-local `key_path` in HTTP requests.
 - Avoid logging secrets in handler request bodies or service results.
 - Require explicit confirmation fields for destructive operations such as database drops.
