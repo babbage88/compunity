@@ -25,6 +25,7 @@ Add:
 
 - Done: `infractl api serve --listen-address :8181`
 - Done: `GET /api/v1/health`
+- Done: `POST /api/v1/database/valkey/install`
 - Done: `POST /api/v1/proxy/{name}/install`
 - Done: `POST /api/v1/storage/s3/garage/node`
 - Done: `POST /api/v1/storage/s3/garage/token`
@@ -37,7 +38,7 @@ The proxy installer was the first target because the Cobra command already deleg
 - Done: `POST /api/v1/proxy/{name}/install`
 - `POST /api/v1/database/postgres/app`
 - `POST /api/v1/database/mariadb/install`
-- `POST /api/v1/database/valkey/install`
+- Done: `POST /api/v1/database/valkey/install`
 - Done: `POST /api/v1/storage/s3/garage/node`
 - Done: `POST /api/v1/storage/s3/garage/token`
 - `POST /api/v1/proxmox/lxc`
@@ -51,7 +52,8 @@ The proxy installer was the first target because the Cobra command already deleg
 1. Done: Proxy installers.
 2. Done: Garage S3 token creation.
 3. Done: Garage node deployment.
-4. Valkey and MariaDB remote installers.
+4. In progress: Valkey and MariaDB remote installers.
+   - Done: Valkey remote installer.
 5. Remote systemd app deployment.
 6. Proxmox VM/LXC operations.
 7. PostgreSQL app database setup.
