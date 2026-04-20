@@ -26,6 +26,7 @@ Add:
 - Done: `infractl api serve --listen-address :8181`
 - Done: `GET /api/v1/health`
 - Done: `POST /api/v1/proxy/{name}/install`
+- Done: `POST /api/v1/storage/s3/garage/node`
 - Done: `POST /api/v1/storage/s3/garage/token`
 
 The proxy installer was the first target because the Cobra command already delegates to `deployer.RemoteWebProxyInstaller`, making it a clean path for proving the request/handler/service pattern. Garage S3 token creation followed because it returns useful structured credentials and has a similarly clean deployer-layer entry point.
@@ -37,7 +38,7 @@ The proxy installer was the first target because the Cobra command already deleg
 - `POST /api/v1/database/postgres/app`
 - `POST /api/v1/database/mariadb/install`
 - `POST /api/v1/database/valkey/install`
-- `POST /api/v1/storage/s3/garage/node`
+- Done: `POST /api/v1/storage/s3/garage/node`
 - Done: `POST /api/v1/storage/s3/garage/token`
 - `POST /api/v1/proxmox/lxc`
 - `POST /api/v1/proxmox/vm`
@@ -49,7 +50,7 @@ The proxy installer was the first target because the Cobra command already deleg
 
 1. Done: Proxy installers.
 2. Done: Garage S3 token creation.
-3. Garage node deployment.
+3. Done: Garage node deployment.
 4. Valkey and MariaDB remote installers.
 5. Remote systemd app deployment.
 6. Proxmox VM/LXC operations.
