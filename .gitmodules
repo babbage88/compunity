@@ -2,9 +2,9 @@
 	path = go-infra
 	url = https://github.com/babbage88/go-infra.git
 	branch = develop
-[submodule "db-helper-ui"]
-	path = db-helper-ui
-	url = https://github.com/babbage88/db-helper-ui.git
+[submodule "infractl-ui"]
+	path = infractl-ui
+	url = https://github.com/babbage88/infractl-ui.git
 	branch = develop
 [submodule "infra-cli"]
 	path = infra-cli

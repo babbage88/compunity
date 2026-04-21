@@ -15,7 +15,7 @@ The rest—installing dependencies, configuring databases, managing networking, 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         Infractl Ecosystem                                   │
 ├──────────────────────┬──────────────────────────────┬──────────────────────┤
-│   infra-cli          │   db-helper-ui               │   go-infra            │
+│   infra-cli          │   infractl-ui               │   go-infra            │
 │   (CLI Tool)         │   (React Dashboard)          │   (Backend API)       │
 │   └─ 35+ commands    │   └─ Database management     │   └─ REST API        │
 │   └─ 15 packages     │   └─ Host registry           │   └─ Job processing  │
@@ -105,7 +105,7 @@ infractl deploy vps \
   --environment staging
 
 # Monitor deployments via web UI
-# (db-helper-ui provides dashboard)
+# (infractl-ui provides dashboard)
 ```
 
 **Benefits**:
@@ -230,7 +230,7 @@ USER INTERFACES
     │   └─ SSH direct connections to hosts
     │   └─ Local file system operations
     │
-    └─ db-helper-ui (web dashboard)
+    └─ infractl-ui (web dashboard)
         └─ HTTP REST API calls to go-infra
         └─ WebSocket for real-time updates
         └─ Browser local storage for caching
@@ -739,7 +739,7 @@ Data Corruption
 
 - **[infra-cli AGENTS.md](../infra-cli/AGENTS.md)** - CLI tool documentation
 - **[go-infra AGENTS.md](../go-infra/AGENTS.md)** - API backend documentation
-- **[db-helper-ui README.md](../db-helper-ui/README.md)** - Web UI documentation
+- **[infractl-ui README.md](../infractl-ui/README.md)** - Web UI documentation
 - **[API Specification](../go-infra/swagger.json)** - OpenAPI/Swagger spec
 - **[Database Schema](../go-infra/migrations)** - Database migrations
 

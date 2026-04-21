@@ -107,7 +107,7 @@ run_infra_dev_api: kill_api
 
 run_ui_dev: kill_ui
     echo "Starting UI development server..."
-    cd ./db-helper-ui && npm run dev &
+    cd ./infractl-ui && npm run dev &
 
 run_all_dev: run_infra_dev_api run_ui_dev
     echo "All development servers are running."
