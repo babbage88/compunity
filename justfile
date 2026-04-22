@@ -47,8 +47,6 @@ local-swagger: check-swagger
     rm local-swagger.json local-swagger.yaml
     cd ...
 
-
-
 local-swagger-https: check-swagger
     #!/usr/bin/env bash
     cd go-infra
@@ -63,6 +61,37 @@ local-swagger-https: check-swagger
     printf "#### [INFO - Local Dev] #### [%s] Cleaning up temporary swagger files...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
     rm local-swagger.json local-swagger.yaml
     cd ..
+
+npm-ci-ui:
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd infractl-ui
+  npm ci
+  cd $cur_dir
+
+gen-client-api: npm-ci-ui
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd infractl-ui
+  npm run gen-api
+  cd $cur_dir
+
+build-dev-ui: gen-client-api
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd infractl-ui
+  npm run build-dev
+  cd $cur_dir
+
+deploy-dev-ui-nginx: build-dev-ui
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd infractl-ui
+  sudo systemctl stop nginx
+  sudo cp -r -f builds/dev /usr/share/nginx/html/infractl
+  sudo systemctl daemon-reload 
+  sudo systemctl start nginx
+  cd $cur_dir
 
 init_dev_db:
     @echo "Creating development database..."

@@ -30,6 +30,8 @@ Add:
 - Done: `POST /api/v1/proxy/{name}/install`
 - Done: `POST /api/v1/storage/s3/garage/node`
 - Done: `POST /api/v1/storage/s3/garage/token`
+- Done in `go-infra`: `POST /api/v1/proxmox/vm/{vmid}/start`
+- Done in `go-infra`: `GET /api/v1/proxmox/vm`
 
 The proxy installer was the first target because the Cobra command already delegates to `deployer.RemoteWebProxyInstaller`, making it a clean path for proving the request/handler/service pattern. Garage S3 token creation followed because it returns useful structured credentials and has a similarly clean deployer-layer entry point.
 
@@ -45,8 +47,8 @@ The proxy installer was the first target because the Cobra command already deleg
 - `POST /api/v1/proxmox/lxc`
 - `POST /api/v1/proxmox/vm`
 - `POST /api/v1/proxmox/vm/template`
-- `POST /api/v1/proxmox/vm/{vmid}/start`
-- `GET /api/v1/proxmox/vm`
+- Done in `go-infra`: `POST /api/v1/proxmox/vm/{vmid}/start`
+- Done in `go-infra`: `GET /api/v1/proxmox/vm`
 
 ## Refactor Order
 
