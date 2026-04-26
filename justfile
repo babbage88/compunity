@@ -150,7 +150,10 @@ run_all_dev:
     set -Eeuo pipefail
 
     cleanup() {
-      local exit_code=$?
+      local exit_code="${1:-$?}"
+
+      trap - INT TERM EXIT
+
       printf "\n#### [INFO - Local Dev] #### [%s] Stopping development servers...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
       just kill_api || true
       just kill_ui || true
@@ -158,7 +161,10 @@ run_all_dev:
       exit "$exit_code"
     }
 
-    trap cleanup INT TERM EXIT
+    # Ctrl-C is an intentional shutdown path for local dev, so exit 0.
+    trap 'cleanup 0' INT
+    trap 'cleanup 143' TERM
+    trap 'cleanup $?' EXIT
 
     just kill_api
     just kill_ui
@@ -173,7 +179,23 @@ run_all_dev:
 
     printf "#### [INFO - Local Dev] #### [%s] All development servers are running. Press Ctrl-C to stop both.\n" "$(date '+%Y-%m-%d %H:%M:%S')"
 
-    wait -n "$api_pid" "$ui_pid"
+    # macOS ships with Bash 3.2, which does not support `wait -n`.
+    # Poll the Bash job table instead so Ctrl-C cleanup works on macOS and Linux.
+    while true; do
+      running_jobs="$(jobs -pr || true)"
+
+      if ! grep -Fqx "$api_pid" <<<"$running_jobs"; then
+        wait "$api_pid" || true
+        break
+      fi
+
+      if ! grep -Fqx "$ui_pid" <<<"$running_jobs"; then
+        wait "$ui_pid" || true
+        break
+      fi
+
+      sleep 1
+    done
 
 infractl-utils:
     cd ./infra-cli && make utils
