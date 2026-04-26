@@ -61,7 +61,7 @@
           GREEN="\[\033[32m\]"
           CYAN="\[\033[36m\]"
           BLUE="\[\033[34m\]"
-          export PS1="${BOLD}${GREEN}\u${RESET}@${CYAN}\h ${BLUE}\w${RESET} \$ "
+          export PS1="''${BOLD}''${GREEN}\u''${RESET}@''${CYAN}\h ''${BLUE}\w''${RESET} \\$ "
 
           for dir in */; do
           if [ -f "$dir/package.json" ]; then
