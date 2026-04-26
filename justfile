@@ -62,6 +62,13 @@ local-swagger-https: check-swagger
     rm local-swagger.json local-swagger.yaml
     cd ..
 
+local-swagger-https-gen-client: local-swagger-https
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd infractl-ui
+  npm run gen-api
+  cd $cur_dir
+
 npm-ci-ui:
   #!/usr/bin/env bash
   cur_dir=$(pwd)

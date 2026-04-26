@@ -1,0 +1,48 @@
+name: Infractl UI API Client
+
+on:
+  pull_request:
+    paths:
+      - "go-infra/swagger.json"
+      - "go-infra/swagger.yaml"
+      - "go-infra/services/**/*.go"
+      - "infractl-ui/scripts/**"
+      - "infractl-ui/src/lib/api/**"
+      - "infractl-ui/package.json"
+      - "infractl-ui/package-lock.json"
+  push:
+    branches:
+      - main
+    paths:
+      - "go-infra/swagger.json"
+      - "go-infra/swagger.yaml"
+      - "go-infra/services/**/*.go"
+      - "infractl-ui/scripts/**"
+      - "infractl-ui/src/lib/api/**"
+      - "infractl-ui/package.json"
+      - "infractl-ui/package-lock.json"
+
+jobs:
+  verify-generated-api-client:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infractl-ui
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: infractl-ui/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify generated API client
+        run: npm run verify-gen-api
