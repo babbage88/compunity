@@ -62,7 +62,7 @@ local-swagger-https: check-swagger
     rm local-swagger.json local-swagger.yaml
     cd ..
 
-local-swagger-https-gen-client: local-swagger-https
+regenerate-swagger-api-client: local-swagger-https
   #!/usr/bin/env bash
   cur_dir=$(pwd)
   cd infractl-ui
@@ -145,8 +145,35 @@ run_ui_dev: kill_ui
     echo "Starting UI development server..."
     cd ./infractl-ui && npm run dev &
 
-run_all_dev: run_infra_dev_api run_ui_dev
-    echo "All development servers are running."
+run_all_dev:
+    #!/usr/bin/env bash
+    set -Eeuo pipefail
+
+    cleanup() {
+      local exit_code=$?
+      printf "\n#### [INFO - Local Dev] #### [%s] Stopping development servers...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+      just kill_api || true
+      just kill_ui || true
+      printf "#### [INFO - Local Dev] #### [%s] Development servers stopped.\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+      exit "$exit_code"
+    }
+
+    trap cleanup INT TERM EXIT
+
+    just kill_api
+    just kill_ui
+
+    printf "#### [INFO - Local Dev] #### [%s] Starting Infra API at https://localhost:{{infraapi_port}}...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    (cd ./go-infra && go run . --use-https --cert-file {{infrapi_crt}} --cert-key {{infrapi_key}}) &
+    api_pid=$!
+
+    printf "#### [INFO - Local Dev] #### [%s] Starting UI development server...\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+    (cd ./infractl-ui && npm run dev) &
+    ui_pid=$!
+
+    printf "#### [INFO - Local Dev] #### [%s] All development servers are running. Press Ctrl-C to stop both.\n" "$(date '+%Y-%m-%d %H:%M:%S')"
+
+    wait -n "$api_pid" "$ui_pid"
 
 infractl-utils:
     cd ./infra-cli && make utils
