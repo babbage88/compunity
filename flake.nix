@@ -46,21 +46,46 @@
             air
           ];
 
-          shellHook = ''
-            export GOPATH="$PWD/.nix-go"
-            export GOBIN="$GOPATH/bin"
-            export PATH="$GOBIN:$PATH"
+        shellHook = ''
+          export GOPATH="$PWD/.nix-go"
+          export GOBIN="$GOPATH/bin"
+          export PATH="$GOBIN:$PATH"
 
-            export PNPM_HOME="$PWD/.pnpm-home"
-            export PATH="$PNPM_HOME:$PATH"
+          export PNPM_HOME="$PWD/.pnpm-home"
+          export PATH="$PNPM_HOME:$PATH"
 
-            mkdir -p "$GOPATH" "$GOBIN" "$PNPM_HOME"
+          mkdir -p "$GOPATH" "$GOBIN" "$PNPM_HOME"
+          # Pretty prompt
+          RESET="\[\033[0m\]"
+          BOLD="\[\033[1m\]"
+          GREEN="\[\033[32m\]"
+          CYAN="\[\033[36m\]"
+          BLUE="\[\033[34m\]"
+          export PS1="${BOLD}${GREEN}\u${RESET}@${CYAN}\h ${BLUE}\w${RESET} \$ "
 
-            echo "Dev shell ready"
-            echo "Go:   $(go version)"
-            echo "Node: $(node --version)"
-            echo "pnpm: $(pnpm --version)"
-          '';
+          for dir in */; do
+          if [ -f "$dir/package.json" ]; then
+              echo "Installing frontend deps in $dir"
+              (
+                cd "$dir"
+                if [ -f pnpm-lock.yaml ]; then
+                  pnpm install
+                elif [ -f package-lock.json ]; then
+                  npm ci
+                elif [ -f yarn.lock ]; then
+                  yarn install
+                else
+                  npm install
+                fi
+              )
+            fi
+          done
+        
+          echo "Dev shell ready"
+          echo "Go:   $(go version)"
+          echo "Node: $(node --version)"
+          echo "npm:  $(npm --version)"
+        '';
         };
       });
 }
