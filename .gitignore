@@ -1,3 +1,5 @@
 certs/**
 .gocache
+.nix-go/**
+.nix-go
 cfcerts**
