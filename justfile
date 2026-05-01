@@ -17,8 +17,17 @@ SPEC_JSON_SRC_FILE_HTTP := "spec/swagger.local.json"
 SPEC_YAML_SRC_FILE_HTTP := "spec/swagger.local.yaml"
 DEV_SPEC_JSON_SRC_FILE := "spec/swagger.dev.json"
 DEV_SPEC_YAML_SRC_FILE := "spec/swagger.dev.yaml"
+systemd_svc_name := "go-infra"
+etc_install_dir := "/etc/go-infra"
+etc_env_file := etc_install_dir + "/" + "go-infra.env"
+current_host := `hostname -s`
 
-
+echo-var-test:
+  #!/usr/bin/env bash
+  echo {{etc_install_dir}}
+  echo {{etc_env_file}}
+  echo {{systemd_svc_name}}
+  ls {{etc_install_dir}}
 check-swagger:
     @printf "#### [INFO - Local Dev] #### [%s] Ensuring go-swagger cli is installed...\n" "$$(date '+%Y-%m-%d %H:%M:%S')"
     @which swagger || (GO111MODULE=off go get -u github.com/go-swagger/go-swagger/cmd/swagger)
@@ -88,6 +97,28 @@ build-dev-ui: gen-client-api
   cur_dir=$(pwd)
   cd infractl-ui
   npm run build-dev
+  cd $cur_dir
+
+build-dev-api: 
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd go-infra
+  echo "## [INFO] ## Builnding go-infra binar for dev to dist/goinfra"
+  go build -v -o dist/goinfra
+  cd $cur_dir
+
+deploy-dev-api: build-dev-api
+  #!/usr/bin/env bash
+  cur_dir=$(pwd)
+  cd go-infra
+  echo "## [INFO] ## Stoping {{systemd_svc_name}} service"
+  sudo systemctl stop {{systemd_svc_name}}
+  echo "## [INFO] ## Copying dist/goinfra to {{etc_install_dir}}/goinfra"
+  sudo cp dist/goinfra {{etc_install_dir}}/goinfra
+  sudo cp .env.{{current_host}} {{etc_install_dir}}/goinfra.env
+  echo "## [INFO] ## Starting {{systemd_svc_name}} service"
+  sudo systemctl start {{systemd_svc_name}}
+  sudo systemctl status {{systemd_svc_name}}
   cd $cur_dir
 
 deploy-dev-ui-nginx: build-dev-ui

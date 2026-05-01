@@ -3,3 +3,4 @@ certs/**
 .nix-go/**
 .nix-go
 cfcerts**
+.pnpm-home

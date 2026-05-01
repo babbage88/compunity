@@ -20,8 +20,6 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             go
-
-            # Go tooling
             gopls
             delve
             gotools
@@ -30,12 +28,10 @@
             sqlc
             goose
 
-            # Frontend tooling
             nodejs_24
             pnpm
             yarn
 
-            # Useful API/dev tools
             just
             jq
             curl
@@ -44,6 +40,7 @@
             postgresql
             sqlite
             air
+            bash-completion
           ];
 
         shellHook = ''
@@ -55,6 +52,17 @@
           export PATH="$PNPM_HOME:$PATH"
 
           mkdir -p "$GOPATH" "$GOBIN" "$PNPM_HOME"
+          if [ -n "$BASH_VERSION" ]; then
+            source ${pkgs.bash-completion}/etc/profile.d/bash_completion.sh
+            eval "$(just --completions bash)"
+            if command -v npm >/dev/null 2>&1; then
+              source <(npm completion)
+            fi
+          
+            if command -v pnpm >/dev/null 2>&1; then
+              eval "$(pnpm completion bash)"
+            fi
+          fi
           # Pretty prompt
           RESET="\[\033[0m\]"
           BOLD="\[\033[1m\]"
