@@ -17,9 +17,9 @@ SPEC_JSON_SRC_FILE_HTTP := "spec/swagger.local.json"
 SPEC_YAML_SRC_FILE_HTTP := "spec/swagger.local.yaml"
 DEV_SPEC_JSON_SRC_FILE := "spec/swagger.dev.json"
 DEV_SPEC_YAML_SRC_FILE := "spec/swagger.dev.yaml"
-systemd_svc_name := "go-infra"
-etc_install_dir := "/etc/go-infra"
-etc_env_file := etc_install_dir + "/" + "go-infra.env"
+systemd_svc_name := "goinfra"
+etc_install_dir := "/etc/goinfra"
+etc_env_file := etc_install_dir + "/" + systemd_svc_name + ".env"
 current_host := `hostname -s`
 
 echo-var-test:
