@@ -96,7 +96,7 @@ build-dev-ui: gen-client-api
   #!/usr/bin/env bash
   cur_dir=$(pwd)
   cd infractl-ui
-  npm run build-dev
+  npm run build-{{current_host}}
   cd $cur_dir
 
 build-dev-api: 
